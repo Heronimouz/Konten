@@ -8,23 +8,62 @@ public class Main {
     private static List<Konto> konten = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        Konto ebk = new Konto("EBK", null, KontoTyp.BILANZKONTO);
-        Konto sbk = new Konto("SBK", null, KontoTyp.BILANZKONTO);
+        List<BuchungsCache> caches = new ArrayList<>();
 
-        konten.add(ebk);
-        konten.add(sbk);
+        Konto ebk = null;
+        Konto sbk = null;
 
         BufferedReader csvReader = new BufferedReader(new FileReader("Konten.csv"));
-
         String row = null;
         boolean isNewKonto = true;
+        Konto newKontoCreate = null;
         while ((row = csvReader.readLine()) != null) {
             String[] data = row.split(",");
-
-            if (data.length == 0) {
+            if (data.length <= 1) {
                 isNewKonto = true;
+                continue;
             }
+
+            if (isNewKonto) {
+                newKontoCreate = new Konto(data[2], data.length > 6 ? getKontoForName(data[6]) : null, data[5] == "B" ? KontoTyp.BILANZKONTO : data[5] == "A" ? KontoTyp.AKTIV : KontoTyp.PASSIV);
+                konten.add(newKontoCreate);
+                if (newKontoCreate.getName().equalsIgnoreCase("ebk")) {
+                    ebk = newKontoCreate;
+                }
+                else if (newKontoCreate.getName().equalsIgnoreCase("sbk")) {
+                    sbk = newKontoCreate;
+                }
+            }
+            else {
+                if (!data[0].equalsIgnoreCase("")) {
+                    caches.add(new BuchungsCache(newKontoCreate.getName(), data[0], new BigDecimal(data[1])));
+                }
+                if (data.length > 2 && !data[3].equalsIgnoreCase("")) {
+                    caches.add(new BuchungsCache(data[3], newKontoCreate.getName(), new BigDecimal(data[4])));
+                }
+            }
+
+
             isNewKonto = false;
+        }
+
+        if (ebk == null || sbk == null) {
+            throw new IllegalStateException("EBK and SBK Konto are necessary");
+        }
+
+        for (BuchungsCache buchung : caches) {
+            Konto sollKonto = getKontoForName(buchung.soll);
+            Konto habenKonto = getKontoForName(buchung.haben);
+
+            if (sollKonto == null || habenKonto == null) {
+                throw new IllegalStateException("Buchung für nicht existierendes Konto");
+            }
+
+            new Buchung(sollKonto, habenKonto, buchung.betrag);
+        }
+
+        for (Konto konto: konten) {
+            System.out.println(konto.print());
         }
 
         String command = IOTools.readLine();
@@ -102,6 +141,18 @@ public class Main {
     private static Konto getKontoForName(String name) {
         List<Konto> kontos = konten.stream().filter(konto -> konto.getName().equalsIgnoreCase(name)).collect(Collectors.toList());
         return kontos.isEmpty() ? null : kontos.get(0);
+    }
+
+    public static class BuchungsCache {
+        String soll;
+        String haben;
+        BigDecimal betrag;
+
+        public BuchungsCache(String soll, String haben, BigDecimal betrag) {
+            this.soll = soll;
+            this.haben = haben;
+            this.betrag = betrag;
+        }
     }
 
 }

@@ -1,5 +1,14 @@
-S,,EBK,,H
+S,,EBK,,H,B
 EK,50,,BGA,100
 Darlehen,50,,,
 
-S,,SBK,,H
+S,,SBK,,H,B
+
+S,,EK,,H,P,EBK
+,,,EBK,50
+
+S,,Darlehen,,H,P,EBK
+,,,EBK,50
+
+S,,BGA,,H,A,EBK
+EBK,100
