@@ -1,4 +1,4 @@
-import java.io.Console;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,44 +7,20 @@ import java.util.stream.Collectors;
 public class Main {
     private static List<Konto> konten = new ArrayList<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Konto ebk = new Konto("EBK", null, KontoTyp.BILANZKONTO);
-//        Konto bga = new Konto("BGA", ebk, KontoTyp.AKTIV);
-//        Konto ek = new Konto("EK", ebk, KontoTyp.PASSIV);
-//        Konto forderungen = new Konto("Forderungen", ebk, KontoTyp.AKTIV);
-
-//        Konto guv = new Konto("Gewinn und Verlust", ek, KontoTyp.AKTIV);
-//        Konto aufwendungen = new Konto("Aufwendungen", guv, KontoTyp.PASSIV);
-//        Konto umsatzErlöse = new Konto("UmsatzErlöse", guv, KontoTyp.AKTIV);
-
         Konto sbk = new Konto("SBK", null, KontoTyp.BILANZKONTO);
-
-//        Buchung bgaAnEbk = new Buchung(bga, ebk, new BigDecimal(30));
-//        Buchung ebkAnEk = new Buchung(ebk, ek, new BigDecimal(20));
-//        Buchung fordAnEbk = new Buchung(forderungen, ebk, BigDecimal.ZERO);
-//        Buchung fordAnUms = new Buchung(forderungen, umsatzErlöse, new BigDecimal(30));
-//        aufwendungen.buchen(bga, BigDecimal.TEN);
-
-        for (Konto konto : ebk.getChildKontos()) {
-            konto.saldieren(sbk);
-        }
-//        bga.saldieren(sbk);
-//        ek.saldieren(sbk);
-//        forderungen.saldieren(sbk);
-
-        System.out.println(ebk.print());
-
-//        System.out.println(bga.print());
-//        System.out.println(ek.print());
-//        System.out.println(forderungen.print());
-//        System.out.println(aufwendungen.print());
-//        System.out.println(umsatzErlöse.print());
-//        System.out.println(guv.print());
-
-        System.out.println(sbk.print());
 
         konten.add(ebk);
         konten.add(sbk);
+
+        BufferedReader csvReader = new BufferedReader(new FileReader("Konten.csv"));
+
+        String row = null;
+        while ((row = csvReader.readLine()) != null) {
+            String[] data = row.split(",");
+            System.out.println(row);
+        }
 
         String command = IOTools.readLine();
         while (!command.equalsIgnoreCase("exit")) {
