@@ -2,6 +2,7 @@
 *.class
 *.xml
 *.iml
+!/.idea/dictionaries/lucas.xml
 
 # Log file
 *.log
