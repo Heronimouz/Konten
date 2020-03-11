@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public class Konto {
     private final String name;
-    private final Konto parentKonto;
+    private Konto parentKonto;
     private List<Konto> childKontos = new ArrayList<>();
     private final KontoTyp typ;
     private final List<Buchung> sollBuchungen = new ArrayList<>();
@@ -47,6 +47,14 @@ public class Konto {
 
     public List<Konto> getChildKontos() {
         return childKontos;
+    }
+
+    public Konto getParentKonto() {
+        return parentKonto;
+    }
+
+    public void setParentKonto(Konto parentKonto) {
+        this.parentKonto = parentKonto;
     }
 
     public void saldieren(Konto sbk) {
