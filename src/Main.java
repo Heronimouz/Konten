@@ -68,7 +68,7 @@ public class Main {
                         konten.add(newKonto);
                         System.out.println(newKonto.print());
                         break;
-                    case "buchung":
+                    case "b":
                         Konto sollKonto = getKontoForName(commandWords[1]);
                         Konto habenKonto = getKontoForName(commandWords[2]);
                         if (sollKonto == null) {
