@@ -17,9 +17,14 @@ public class Main {
         BufferedReader csvReader = new BufferedReader(new FileReader("Konten.csv"));
 
         String row = null;
+        boolean isNewKonto = true;
         while ((row = csvReader.readLine()) != null) {
             String[] data = row.split(",");
-            System.out.println(row);
+
+            if (data.length == 0) {
+                isNewKonto = true;
+            }
+            isNewKonto = false;
         }
 
         String command = IOTools.readLine();
