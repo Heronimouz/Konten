@@ -51,6 +51,23 @@ public class Main {
             throw new IllegalStateException("EBK and SBK Konto are necessary");
         }
 
+        List<BuchungsCache> existingBuchungen = new ArrayList<>();
+        List<BuchungsCache> buchungDeleteList = new ArrayList<>();
+        for (BuchungsCache buchung : caches) {
+            List<BuchungsCache> buchungsCaches = existingBuchungen.stream()
+                    .filter(existingBuchung -> existingBuchung.betrag.compareTo(buchung.betrag) == 0
+                            && existingBuchung.soll.equalsIgnoreCase(buchung.soll)
+                            && existingBuchung.haben.equalsIgnoreCase(buchung.haben)).collect(Collectors.toList());
+            if (!buchungsCaches.isEmpty()) {
+                existingBuchungen.removeAll(buchungsCaches);
+                buchungDeleteList.add(buchung);
+            }
+            else {
+                existingBuchungen.add(buchung);
+            }
+        }
+        caches.removeAll(buchungDeleteList);
+
         for (BuchungsCache buchung : caches) {
             Konto sollKonto = getKontoForName(buchung.soll);
             Konto habenKonto = getKontoForName(buchung.haben);
@@ -63,6 +80,10 @@ public class Main {
         }
 
         for (Konto konto: konten) {
+            Konto finalSbk = sbk;
+            if (konto.getBuchungen().stream().anyMatch(buchung -> buchung.getHabenKonto().equals(finalSbk)||buchung.getSollKonto().equals(finalSbk))) {
+                konto.setAbgeschlossen();
+            }
             System.out.println(konto.print());
         }
 
@@ -122,6 +143,10 @@ public class Main {
                             konten.remove(foundKonto);
                             foundKonto.getParentKonto().getChildKontos().remove(foundKonto);
                             foundKonto.getChildKontos().forEach(konto -> konto.setParentKonto(null));
+                            foundKonto.getBuchungen().forEach(buchung1 -> {
+                                buchung1.getHabenKonto().getHabenBuchungen().remove(buchung1);
+                                buchung1.getSollKonto().getSollBuchungen().remove(buchung1);
+                            });
                             System.out.println("delete of " + commandWords[1] + " successfull");
                         }
                         break;
@@ -136,6 +161,8 @@ public class Main {
             }
             command = IOTools.readLine();
         }
+
+        
     }
 
     private static Konto getKontoForName(String name) {

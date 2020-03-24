@@ -1,4 +1,5 @@
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Buchung {
 
@@ -30,4 +31,5 @@ public class Buchung {
     public BigDecimal getBetrag() {
         return betrag;
     }
+
 }

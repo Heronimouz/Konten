@@ -79,6 +79,16 @@ public class Konto {
         abgeschlossen = true;
     }
 
+    public void setAbgeschlossen() {
+        this.abgeschlossen = true;
+    }
+
+    public List<Buchung> getBuchungen() {
+        ArrayList<Buchung> result = new ArrayList<>(getSollBuchungen());
+        result.addAll(getHabenBuchungen());
+        return result;
+    }
+
     public String print() {
         StringBuilder sb = new StringBuilder();
 
