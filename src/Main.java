@@ -132,6 +132,11 @@ public class Main {
                         for (Konto konto : ebk.getChildKontos()) {
                             konto.saldieren(sbk);
                         }
+
+                        if (sbk.getSollGesamt().compareTo(sbk.getHabenGesamt()) != 0) {
+                            System.out.println(sbk.print());
+                            throw new IllegalStateException("Soll und Haben sind unterschiedlich!");
+                        }
                     case "print":
                         for (Konto konto : konten) {
                             System.out.println(konto.print());
@@ -156,6 +161,9 @@ public class Main {
                 }
             }
             catch (Exception ex) {
+                if (ex instanceof IllegalStateException) {
+                    throw new IllegalStateException(ex);
+                }
                 System.out.println("false parameter!");
                 System.out.println(ex.getMessage());
             }

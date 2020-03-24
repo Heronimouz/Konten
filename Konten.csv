@@ -1,14 +1,18 @@
 S,,EBK,,H,B
-EK,50,,BGA,100
-Darlehen,50,,,
+EK,250,,BGA,100
+Darlehen,50,,Gebäude,200
 
 S,,SBK,,H,B
 
 S,,EK,,H,P,EBK
-,,,EBK,50
+,,,EBK,250
 
 S,,Darlehen,,H,P,EBK
 ,,,EBK,50
 
 S,,BGA,,H,A,EBK
-EBK,100
+EBK,100,,,
+
+S,,Gebäude,,H,A,EBK
+EBK,200,,,
+

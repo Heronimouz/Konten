@@ -106,21 +106,44 @@ public class Konto {
             StringBuilder line = new StringBuilder("                                                   ");
             if (sollBuchungen.size() > i) {
                 Buchung sollBuchung = sollBuchungen.get(i);
-                String nameWithBetrag = sollBuchung.getHabenKonto().getName() + " " + sollBuchung.getBetrag();
-                line.replace(1, nameWithBetrag.length(), nameWithBetrag);
+                line.replace(1, 1 + sollBuchung.getHabenKonto().getName().length(), sollBuchung.getHabenKonto().getName());
+                line.replace(24 - sollBuchung.getBetrag().toString().length(), 24, sollBuchung.getBetrag().toString());
             }
             line.replace(25,26,"|");
             if (habenBuchungen.size() > i) {
                 Buchung habenBuchung = habenBuchungen.get(i);
-                String nameWithBetrag = habenBuchung.getSollKonto().getName() + " " + habenBuchung.getBetrag();
-                line.replace(50 - nameWithBetrag.length() , 50, nameWithBetrag);
+                line.replace(27, 27 + habenBuchung.getSollKonto().getName().length(), habenBuchung.getSollKonto().getName());
+                line.replace(50 - habenBuchung.getBetrag().toString().length() , 50, habenBuchung.getBetrag().toString());
             }
             sb.append("\n").append(line);
         }
         sb.append("\n---------------------------------------------------\n");
-// TODO Beträge in eine Linie und Summe
-//        sb.append(habenBuchungen.stream().map(Buchung::getBetrag).reduce(BigDecimal::add).orElse(BigDecimal.ZERO)).append("\n");
+        StringBuilder lastLine = new StringBuilder(" Gesamt                  | Gesamt                  \n");
+
+        String habenBetrag = getHabenGesamt().toString();
+        String sollBetrag = getSollGesamt().toString();
+
+        lastLine.replace(24 - sollBetrag.length(), 24, sollBetrag);
+        lastLine.replace(50 - habenBetrag.length(), 50, habenBetrag);
+
+        sb.append(lastLine);
 
         return sb.toString();
+    }
+
+    public BigDecimal getHabenGesamt() {
+        return habenBuchungen
+                .stream()
+                .map(Buchung::getBetrag)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+    }
+
+    public BigDecimal getSollGesamt() {
+        return sollBuchungen
+                .stream()
+                .map(Buchung::getBetrag)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 }
