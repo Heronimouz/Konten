@@ -57,6 +57,10 @@ public class Konto {
         this.parentKonto = parentKonto;
     }
 
+    public KontoTyp getTyp() {
+        return typ;
+    }
+
     public void saldieren(Konto sbk) {
         if (abgeschlossen) {
             return;

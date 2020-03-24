@@ -25,7 +25,7 @@ public class Main {
             }
 
             if (isNewKonto) {
-                newKontoCreate = new Konto(data[2], data.length > 6 ? getKontoForName(data[6]) : null, data[5] == "B" ? KontoTyp.BILANZKONTO : data[5] == "A" ? KontoTyp.AKTIV : KontoTyp.PASSIV);
+                newKontoCreate = new Konto(data[2], data.length > 6 ? getKontoForName(data[6]) : null, data[5].equalsIgnoreCase("B") ? KontoTyp.BILANZKONTO : data[5].equalsIgnoreCase("A") ? KontoTyp.AKTIV : KontoTyp.PASSIV);
                 konten.add(newKontoCreate);
                 if (newKontoCreate.getName().equalsIgnoreCase("ebk")) {
                     ebk = newKontoCreate;
@@ -162,7 +162,46 @@ public class Main {
             command = IOTools.readLine();
         }
 
-        
+        FileWriter csvWriter = new FileWriter("Konten.csv");
+
+        for (Konto konto : konten) {
+            csvWriter.append("S,,");
+            csvWriter.append(konto.getName());
+            csvWriter.append(",,H,");
+            csvWriter.append(konto.getTyp().name().substring(0,1));
+            if (konto.getParentKonto() != null) {
+                csvWriter.append(",");
+                csvWriter.append(konto.getParentKonto().getName());
+            }
+            csvWriter.append("\n");
+            for (int i = 0; i < (Math.max(konto.getSollBuchungen().size(), konto.getHabenBuchungen().size())); i++) {
+                if (konto.getSollBuchungen().size() > i) {
+                    Buchung buchung = konto.getSollBuchungen().get(i);
+                    csvWriter.append(buchung.getHabenKonto().getName());
+                    csvWriter.append(",");
+                    csvWriter.append(buchung.getBetrag().toString());
+                    csvWriter.append(",");
+                }
+                else {
+                    csvWriter.append(",,");
+                }
+                csvWriter.append(",");
+                if (konto.getHabenBuchungen().size() > i) {
+                    Buchung buchung = konto.getHabenBuchungen().get(i);
+                    csvWriter.append(buchung.getSollKonto().getName());
+                    csvWriter.append(",");
+                    csvWriter.append(buchung.getBetrag().toString());
+                }
+                else {
+                    csvWriter.append(",");
+                }
+                csvWriter.append("\n");
+            }
+            csvWriter.append("\n");
+        }
+
+        csvWriter.flush();
+        csvWriter.close();
     }
 
     private static Konto getKontoForName(String name) {
