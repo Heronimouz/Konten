@@ -3,6 +3,8 @@
 *.xml
 *.iml
 !.idea/dictionaries/lucas.xml
+out/
+src/.DS_Store
 
 # Log file
 *.log
